@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NAW Flappy Crab</title>
+    <style>
+        :root { --primary: #f40e0e; --gold: #ffcc00; --dark: #0a0a0a; }
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Inter', sans-serif; touch-action: none; }
+        canvas { display: block; margin: 0 auto; background: linear-gradient(to bottom, #1a1a1a, #050505); }
+        
+        .ui-layer {
+            position: fixed; inset: 0; pointer-events: none;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 100;
+        }
+        .score-board {
+            position: absolute; top: 40px; font-size: 3rem; font-weight: bold;
+            color: white; text-shadow: 0 0 10px var(--primary);
+        }
+        .screen {
+            pointer-events: auto; background: rgba(0,0,0,0.85);
+            padding: 40px; border-radius: 30px; text-align: center; border: 2px solid var(--primary);
+        }
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 15px 40px;
+            border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px;
+            box-shadow: 0 0 20px var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="ui-layer">
+    <div class="score-board" id="score">0</div>
+    
+    <div id="start-screen" class="screen">
+        <h1 style="color:var(--primary); margin:0;">FLAPPY CRAB</h1>
+        <p style="color:#888;">Chạm màn hình để giúp Cua bay lên!</p>
+        <button class="btn" onclick="initGame()">BẮT ĐẦU</button>
+    </div>
+
+    <div id="end-screen" class="screen" style="display: none;">
+        <h2 style="color:var(--gold)">GAME OVER</h2>
+        <p style="color:white;">Điểm của bạn:</p>
+        <h1 id="final-score" style="color:var(--primary); font-size: 3rem; margin:10px 0;">0</h1>
+        <p id="reward-text" style="color:#aaa; font-size: 0.8rem;"></p>
+        <button class="btn" onclick="location.reload()">THỬ LẠI</button>
+    </div>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+
+    // Cấu hình màn hình
+    canvas.width = window.innerWidth > 500 ? 400 : window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Tải ảnh Cua
+    const crabImg = new Image();
+    crabImg.src = 'cua vui ve.png';
+
+    // Biến game
+    let crab, pipes, frame, score, gameRunning = false;
+    const gravity = 0.25;
+    const jump = -5;
+    const pipeWidth = 60;
+    const pipeGap = 180;
+
+    function initGame() {
+        document.getElementById('start-screen').style.display = 'none';
+        crab = { x: 50, y: canvas.height/2, w: 50, h: 40, v: 0 };
+        pipes = [];
+        score = 0;
+        frame = 0;
+        gameRunning = true;
+        loop();
+    }
+
+    // Sự kiện nhảy
+    const handleAction = () => { if(gameRunning) crab.v = jump; };
+    window.addEventListener('mousedown', handleAction);
+    window.addEventListener('touchstart', (e) => { e.preventDefault(); handleAction(); });
+    window.addEventListener('keydown', (e) => { if(e.code === 'Space') handleAction(); });
+
+    function createPipe() {
+        let minPipeHeight = 50;
+        let maxPipeHeight = canvas.height - pipeGap - minPipeHeight;
+        let height = Math.floor(Math.random() * (maxPipeHeight - minPipeHeight + 1)) + minPipeHeight;
+        pipes.push({ x: canvas.width, y: height });
+    }
+
+    function loop() {
+        if(!gameRunning) return;
+
+        // Xóa màn hình
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Trọng lực cho Cua
+        crab.v += gravity;
+        crab.y += crab.v;
+
+        // Vẽ Cua (có xoay nhẹ khi bay)
+        ctx.save();
+        ctx.translate(crab.x + crab.w/2, crab.y + crab.h/2);
+        ctx.rotate(crab.v * 0.05);
+        ctx.drawImage(crabImg, -crab.w/2, -crab.h/2, crab.w, crab.h);
+        ctx.restore();
+
+        // Xử lý ống (Cột)
+        if(frame % 100 === 0) createPipe();
+        
+        pipes.forEach((p, i) => {
+            p.x -= 2.5;
+
+            // Vẽ ống trên
+            ctx.fillStyle = '#333';
+            ctx.fillRect(p.x, 0, pipeWidth, p.y);
+            ctx.strokeStyle = varColor('--primary');
+            ctx.strokeRect(p.x, 0, pipeWidth, p.y);
+
+            // Vẽ ống dưới
+            ctx.fillRect(p.x, p.y + pipeGap, pipeWidth, canvas.height);
+            ctx.strokeRect(p.x, p.y + pipeGap, pipeWidth, canvas.height);
+
+            // Kiểm tra va chạm
+            if (crab.x + crab.w > p.x && crab.x < p.x + pipeWidth) {
+                if (crab.y < p.y || crab.y + crab.h > p.y + pipeGap) {
+                    gameOver();
+                }
+            }
+
+            // Tính điểm
+            if(p.x + pipeWidth < crab.x && !p.passed) {
+                score++;
+                p.passed = true;
+                scoreEl.innerText = score;
+            }
+
+            if(p.x < -pipeWidth) pipes.splice(i, 1);
+        });
+
+        // Va chạm đất/trần
+        if(crab.y + crab.h > canvas.height || crab.y < 0) gameOver();
+
+        frame++;
+        requestAnimationFrame(loop);
+    }
+
+    function varColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name); }
+
+    function gameOver() {
+        gameRunning = false;
+        document.getElementById('end-screen').style.display = 'block';
+        document.getElementById('final-score').innerText = score;
+        let reward = "Cố gắng đạt 10 điểm để nhận Voucher nhé!";
+        if(score >= 20) reward = "XUẤT SẮC! Chụp màn hình nhận Voucher 40%!";
+        else if(score >= 10) reward = "GIỎI QUÁ! Voucher 20% dành cho bạn!";
+        document.getElementById('reward-text').innerText = reward;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystery Box - NAW Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-glow: #f40e0e;
+            --gold: #ffcc00;
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 400px;
+            background: #161616;
+            border-radius: 40px;
+            margin: 20px;
+            padding: 30px 20px;
+            border: 2px solid #333;
+            box-shadow: 0 0 40px rgba(0,0,0,1);
+            position: relative;
+        }
+
+        h1 { color: var(--primary-glow); font-size: 1.5rem; text-align: center; text-transform: uppercase; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 40px; }
+
+        /* GRID HỘP QUÀ */
+        .box-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .gift-box {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 15px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gift-box:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.2);
+        }
+
+        .gift-box i {
+            font-size: 3rem;
+            color: var(--primary-glow);
+            filter: drop-shadow(0 0 10px var(--primary-glow));
+            transition: 0.5s;
+        }
+
+        /* Hiệu ứng rung rinh khi chưa mở */
+        .gift-box.shake i {
+            animation: shake 0.5s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: rotate(0); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(0); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0); }
+        }
+
+        /* Khi đã mở */
+        .gift-box.opened {
+            background: #222;
+            border-color: var(--gold);
+        }
+        .gift-box.opened i {
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .prize-display {
+            position: absolute;
+            font-weight: bold;
+            color: var(--gold);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: 0.5s;
+            font-size: 0.9rem;
+        }
+
+        .gift-box.opened .prize-display {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* LUẬT CHƠI */
+        .info-panel {
+            background: rgba(255,255,255,0.03);
+            border-radius: 15px;
+            padding: 15px;
+            border-left: 4px solid var(--gold);
+        }
+        .info-panel h3 { font-size: 0.9rem; color: var(--gold); margin: 0 0 10px 0; }
+        .info-panel p { font-size: 0.75rem; color: #aaa; margin: 5px 0; }
+
+        /* OVERLAY KẾT QUẢ */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 100;
+        }
+        .popup {
+            background: var(--card-bg); border: 2px solid var(--primary-glow);
+            padding: 40px 20px; border-radius: 25px; text-align: center;
+            box-shadow: 0 0 30px var(--primary-glow); width: 80%;
+        }
+        .popup h2 { color: var(--gold); margin-bottom: 10px; }
+        .btn-reload {
+            background: var(--primary-glow); color: white; border: none;
+            padding: 12px 30px; border-radius: 50px; font-weight: bold;
+            margin-top: 20px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-container">
+    <h1>Mystery Box</h1>
+    <p class="subtitle">Chọn một chiếc hộp - Nhận quà bất ngờ từ NAW</p>
+
+    <div class="box-grid">
+        <div class="gift-box shake" onclick="openBox(this, 0)">
+            <i class="fas fa-box-open"></i>
+            <div class="prize-display">ĐANG MỞ...</div>
+        </div>
+        <div class="gift-box shake" onclick="openBox(this, 1)">
+            <i class="fas fa-box-open"></i>
+            <div class="prize-display">ĐANG MỞ...</div>
+        </div>
+        <div class="gift-box shake" onclick="openBox(this, 2)">
+            <i class="fas fa-box-open"></i>
+            <div class="prize-display">ĐANG MỞ...</div>
+        </div>
+        <div class="gift-box shake" onclick="openBox(this, 3)">
+            <i class="fas fa-box-open"></i>
+            <div class="prize-display">ĐANG MỞ...</div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>HƯỚNG DẪN NHẬN THƯỞNG</h3>
+        <p><i class="fas fa-hand-pointer"></i> 1. Chạm vào 1 chiếc hộp bạn thích nhất.</p>
+        <p><i class="fas fa-camera"></i> 2. Chụp ảnh màn hình món quà hiện ra.</p>
+        <p><i class="fas fa-paper-plane"></i> 3. Gửi cho Admin NAW để nhận mã ưu đãi.</p>
+    </div>
+</div>
+
+<div class="overlay" id="overlay">
+    <div class="popup">
+        <i class="fas fa-gift" style="font-size: 4rem; color: var(--gold); margin-bottom: 20px;"></i>
+        <h2>CHÚC MỪNG!</h2>
+        <p id="resultText" style="font-size: 1.2rem; font-weight: bold;"></p>
+        <button class="btn-reload" onclick="location.reload()">CHƠI LẠI</button>
+    </div>
+</div>
+
+<script>
+    const prizes = [
+        "Voucher Giảm 50k",
+        "Free Ship Toàn Quốc",
+        "Móc Khóa NAW Limited",
+        "Voucher Giảm 20%",
+        "Chúc Bạn May Mắn!",
+        "Quà Tặng Bí Mật"
+    ];
+
+    let canPlay = true;
+
+    function openBox(element, index) {
+        if (!canPlay) return;
+        canPlay = false;
+
+        // Dừng rung và mở hộp
+        element.classList.remove('shake');
+        element.classList.add('opened');
+
+        // Lấy ngẫu nhiên phần quà
+        const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+
+        setTimeout(() => {
+            document.getElementById('resultText').innerText = randomPrize;
+            document.getElementById('overlay').style.display = 'flex';
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>

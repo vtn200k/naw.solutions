@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAW Arcade Center - Thế Giới Giải Trí</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #f40e0e;
+            --gold: #ffcc00;
+            --bg: #050505;
+            --card-bg: #111;
+        }
+
+        body {
+            margin: 0; background-color: var(--bg); color: white;
+            font-family: 'Inter', sans-serif; overflow-x: hidden;
+        }
+
+        .container { max-width: 500px; margin: 0 auto; padding: 40px 20px; }
+
+        header { text-align: center; margin-bottom: 40px; }
+        header h1 { 
+            font-family: 'Orbitron', sans-serif; font-size: 2rem; 
+            color: var(--primary); text-shadow: 0 0 15px var(--primary);
+            margin: 0; letter-spacing: 2px;
+        }
+        header p { color: var(--gold); font-size: 0.8rem; text-transform: uppercase; margin-top: 5px; }
+
+        .daily-quest {
+            background: linear-gradient(90deg, #1a1a1a, #222);
+            border: 1px solid #333; border-radius: 15px; padding: 15px;
+            margin-bottom: 30px; display: flex; align-items: center; gap: 15px;
+        }
+        .quest-icon { font-size: 1.5rem; color: var(--gold); animation: pulse 1.5s infinite; }
+
+        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        .game-card {
+            background: var(--card-bg); border: 1px solid #222; border-radius: 20px;
+            padding: 25px 15px; text-align: center; text-decoration: none;
+            color: white; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        .game-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold);
+            box-shadow: 0 10px 30px rgba(255, 204, 0, 0.1);
+        }
+
+        /* --- PHẦN ĐỒNG BỘ ICON --- */
+        .icon-wrapper {
+            font-size: 2.8rem; /* Cố định kích thước cho tất cả icon */
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px var(--primary));
+            transition: 0.3s;
+        }
+        
+        /* Hiệu ứng sáng hơn khi hover */
+        .game-card:hover .icon-wrapper {
+            color: var(--gold);
+            filter: drop-shadow(0 0 12px var(--gold));
+            transform: scale(1.1);
+        }
+
+        .game-card h3 { font-size: 0.85rem; margin: 5px 0 0 0; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+        .game-card span { font-size: 0.6rem; color: #555; text-transform: uppercase; margin-top: 4px; }
+
+        .badge {
+            position: absolute; top: 10px; right: -20px;
+            background: var(--primary); color: white; font-size: 0.5rem;
+            font-weight: bold; padding: 3px 20px; transform: rotate(45deg);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        footer { text-align: center; margin-top: 50px; color: #444; font-size: 0.7rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>NAW ARCADE</h1>
+        <p>Play Games • Get Rewards • Shop Smart</p>
+    </header>
+
+    <div class="daily-quest">
+        <div class="quest-icon"><i class="fas fa-trophy"></i></div>
+        <div>
+            <div style="font-weight: bold; font-size: 0.9rem;">zo zo: Hãy chơi vui vẻ và kiếm 500đ nhá</div>
+            <div style="font-size: 0.7rem; color: #888;">Nhận ngay Voucher X2 quyền lợi cho đơn hàng tiếp theo.</div>
+        </div>
+    </div>
+
+    <div class="game-grid">
+        <a href="vòng quay may mắn.html" class="game-card">
+            <div class="icon-wrapper"><i class="fas fa-dharmachakra"></i></div>
+            <h3>VÒNG QUAY</h3>
+            <span>Lucky Spin</span>
+        </a>
+
+        <a href="game.html" class="game-card">
+            <div class="badge">HOT</div>
+            <div class="icon-wrapper"><i class="fas fa-box-open"></i></div>
+            <h3>HỘP BÍ MẬT</h3>
+            <span>Mystery Box</span>
+        </a>
+
+        <a href="game2.html" class="game-card">
+            <div class="icon-wrapper"><i class="fas fa-hand-holding-heart"></i></div>
+            <h3>HỨNG QUÀ</h3>
+            <span>Catcher Game</span>
+        </a>
+
+        <a href="game3.html" class="game-card">
+            <div class="icon-wrapper"><i class="fas fa-paper-plane"></i></div>
+            <h3>CUA BAY</h3>
+            <span>Flappy Crab</span>
+        </a>
+
+        <a href="game4.html" class="game-card">
+            <div class="icon-wrapper"><i class="fas fa-brain"></i></div>
+            <h3>TRÍ NHỚ</h3>
+            <span>Memory Match</span>
+        </a>
+
+        <a href="game5.html" class="game-card">
+            <div class="icon-wrapper"><i class="fas fa-hammer"></i></div>
+            <h3>ĐÀO VÀNG</h3>
+            <span>Crab Miner</span>
+        </a>
+    </div>
+
+    <footer>
+        &copy;  NAW Solutions 
+    </footer>
+</div>
+
+</body>
+</html>

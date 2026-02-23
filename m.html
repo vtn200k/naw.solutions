@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin công ty - NAW Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <style>
+        :root {
+            --primary-color: #f40e0e; 
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-light: #ffffff;
+            --text-gray: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.8;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; padding: 50px 20px; }
+
+        /* Nút quay lại */
+        .back-btn {
+            display: inline-block;
+            color: var(--text-light);
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: var(--primary-color); transform: translateX(-5px); }
+
+        header h1 { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .subtitle { color: var(--text-gray); font-size: 1.1rem; margin-bottom: 40px; border-left: 3px solid var(--primary-color); padding-left: 15px; }
+
+        section { margin-bottom: 60px; }
+        h2 { color: var(--primary-color); margin-bottom: 30px; font-size: 1.5rem; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        /* 1. Bảng thông tin pháp lý */
+        .info-table { width: 100%; border-collapse: collapse; background: var(--card-bg); border-radius: 15px; overflow: hidden; border: 1px solid #333; }
+        .info-table td { padding: 18px 25px; border-bottom: 1px solid #222; }
+        .info-table td:first-child { width: 35%; color: var(--text-gray); font-weight: bold; background: rgba(255,255,255,0.02); }
+
+        /* 2. Khung số liệu (Stats) */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .stat-item { background: #222; padding: 30px; border-radius: 15px; text-align: center; border: 1px solid #333; transition: 0.4s; }
+        .stat-item:hover { border-color: var(--primary-color); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(244, 14, 14, 0.1); }
+        .stat-item i { color: var(--primary-color); font-size: 2.2rem; margin-bottom: 15px; }
+        .stat-item h3 { font-size: 2rem; margin: 5px 0; }
+
+        /* 3. Sơ đồ tổ chức chuyên nghiệp */
+        .org-chart { display: flex; flex-direction: column; align-items: center; position: relative; padding-top: 20px; }
+        .org-node {
+            background: var(--card-bg);
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 220px;
+            transition: 0.3s;
+            position: relative;
+            z-index: 2;
+        }
+        .org-node.ceo { border: 2px solid var(--primary-color); background: rgba(244, 14, 14, 0.05); }
+        .org-node i { font-size: 1.5rem; color: var(--primary-color); margin-bottom: 10px; display: block; }
+        .org-node h4 { margin: 0; font-size: 1.1rem; }
+        .org-node p { margin: 5px 0 0; font-size: 0.85rem; color: var(--text-gray); }
+
+        .connector-line { width: 2px; height: 40px; background: #444; margin: 0 auto; }
+
+        .org-branches {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            position: relative;
+        }
+        /* Đường kẻ ngang nối các nhánh trên PC */
+        @media (min-width: 769px) {
+            .org-branches::before {
+                content: ""; position: absolute; top: -1px; left: 16%; right: 16%; height: 2px; background: #444;
+            }
+        }
+
+        .org-node:hover { transform: scale(1.05); border-color: var(--primary-color); }
+
+        footer { text-align: center; padding: 50px; color: var(--text-gray); font-size: 0.85rem; border-top: 1px solid #222; }
+
+        .cua-decoration {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            opacity: 0.4;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+
+        @media (max-width: 768px) {
+            .org-branches { grid-template-columns: 1fr; gap: 40px; }
+            .org-branches::before { display: none; }
+            .info-table td { display: block; width: 100% !important; }
+            .info-table td:first-child { background: none; color: var(--primary-color); padding-bottom: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Quay lại Trang chủ</a>
+
+        <header data-aos="fade-down">
+            <h1>THÔNG TIN CÔNG TY</h1>
+            <p class="subtitle">Bản sắc doanh nghiệp & Cơ cấu vận hành NAW Solutions.</p>
+        </header>
+
+        <section data-aos="fade-up">
+            <h2>Hồ sơ pháp lý</h2>
+            <table class="info-table">
+                <tr>
+                    <td>Tên doanh nghiệp</td>
+                    <td>CÔNG TY TNHH GIẢI PHÁP NAW (NAW SOLUTIONS)</td>
+                </tr>
+                <tr>
+                    <td>Mã số thuế</td>
+                    <td>010XXXXXXX</td>
+                </tr>
+                <tr>
+                    <td>Ngày thành lập</td>
+                    <td>20/08/2022</td>
+                </tr>
+                <tr>
+                    <td>Đại diện pháp luật</td>
+                    <td>Mr. VTN</td>
+                </tr>
+                <tr>
+                    <td>Lĩnh vực</td>
+                    <td>Truyền thông sáng tạo, TMĐT & Hệ sinh thái Affiliate</td>
+                </tr>
+                <tr>
+                    <td>Địa chỉ</td>
+                    <td>Hà Nội, Việt Nam</td>
+                </tr>
+            </table>
+        </section>
+
+        <section data-aos="fade-up">
+            <h2>Số liệu thực chiến</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <i class="fas fa-rocket"></i>
+                    <h3>1500+</h3>
+                    <p>Dự án Affiliate thành công</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-heart"></i>
+                    <h3>500+</h3>
+                    <p>Đối tác & KOC tin tưởng</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-globe"></i>
+                    <h3>03+</h3>
+                    <p>Nền tảng vận hành chính</p>
+                </div>
+            </div>
+        </section>
+
+        <section data-aos="fade-up">
+            <h2>Sơ đồ tổ chức</h2>
+            <div class="org-chart">
+                <div class="org-node ceo">
+                    <i class="fas fa-user-tie"></i>
+                    <h4>Ban Giám Đốc</h4>
+                    <p>Chiến lược & Định hướng</p>
+                </div>
+
+                <div class="connector-line"></div>
+
+                <div class="org-branches">
+                    <div class="org-node">
+                        <i class="fas fa-video"></i>
+                        <h4>Khối Media</h4>
+                        <p>Studio & Content Creative</p>
+                    </div>
+                    <div class="org-node">
+                        <i class="fas fa-shopping-bag"></i>
+                        <h4>Khối Thương Mại</h4>
+                        <p>Affiliate & TikTok Shop</p>
+                    </div>
+                    <div class="org-node">
+                        <i class="fas fa-tools"></i>
+                        <h4>Khối Kỹ Thuật</h4>
+                        <p>Hệ thống & Tối ưu số</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <img src="cua cám ơn.png" class="cua-decoration" alt="Logo Decoration">
+
+    <footer>
+        <p>© 2026 NAW Solutions</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+    </script>
+</body>
+</html>

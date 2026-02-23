@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAW Memory - Thử Thách Trí Nhớ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --primary: #f40e0e; --gold: #ffcc00; --dark: #0a0a0a; --card: #1a1a1a; }
+        
+        body { 
+            margin: 0; background: var(--dark); font-family: 'Inter', sans-serif; 
+            color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+        }
+
+        .game-box { width: 100%; max-width: 400px; padding: 20px; text-align: center; }
+
+        /* Lưới thẻ bài */
+        .grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+            perspective: 1000px; margin-top: 20px;
+        }
+
+        .card {
+            aspect-ratio: 1/1; position: relative; transform-style: preserve-3d;
+            transition: transform 0.6s; cursor: pointer;
+        }
+
+        .card.flipped { transform: rotateY(180deg); }
+
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; border: 1px solid #333;
+        }
+
+        .card-front { background: var(--card); color: var(--primary); } /* Mặt sau của lá bài */
+        .card-back { background: #222; transform: rotateY(180deg); color: var(--gold); } /* Mặt chứa hình */
+
+        /* Hiệu ứng khi khớp */
+        .card.matched .card-back { border-color: var(--gold); box-shadow: 0 0 15px var(--gold); }
+
+        .stats { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
+        
+        .screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100;
+        }
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 12px 30px;
+            border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-box">
+    <h1 style="color:var(--primary); margin:0;">NAW MEMORY</h1>
+    <p style="font-size: 0.8rem; color: #888; margin-bottom: 20px;">Tìm các cặp hình giống nhau trong thời gian ngắn nhất!</p>
+    
+    <div class="stats">
+        <div>Time: <span id="timer">0</span>s</div>
+        <div>Matches: <span id="matches">0</span>/8</div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+
+    <div id="end-screen" class="screen">
+        <h2 style="color:var(--gold)">XUẤT SẮC!</h2>
+        <p>Thời gian hoàn thành: <span id="final-time">0</span> giây</p>
+        <p id="reward-text" style="font-size: 0.9rem;"></p>
+        <button class="btn" onclick="location.reload()">CHƠI LẠI</button>
+    </div>
+</div>
+
+<script>
+    // Bạn có thể thay các Icon này bằng link ảnh sản phẩm của bạn
+    const icons = ['🦀', '🎁', '💰', '🔥', '💎', '⭐', '🍎', '⚡'];
+    const gameIcons = [...icons, ...icons]; // Tạo 8 cặp (16 thẻ)
+    let flippedCards = [];
+    let matchedCount = 0;
+    let seconds = 0;
+    let timerActive = false;
+    let timerInterval;
+
+    const grid = document.getElementById('grid');
+
+    // Trộn bài ngẫu nhiên
+    gameIcons.sort(() => Math.random() - 0.5);
+
+    // Tạo thẻ bài
+    gameIcons.forEach((icon, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.icon = icon;
+        card.innerHTML = `
+            <div class="card-front"><i class="fas fa-question"></i></div>
+            <div class="card-back">${icon}</div>
+        `;
+        card.addEventListener('click', flipCard);
+        grid.appendChild(card);
+    });
+
+    function flipCard() {
+        if (!timerActive) {
+            timerActive = true;
+            startTimer();
+        }
+        if (flippedCards.length === 2 || this.classList.contains('flipped') || this.classList.contains('matched')) return;
+
+        this.classList.add('flipped');
+        flippedCards.push(this);
+
+        if (flippedCards.length === 2) {
+            checkMatch();
+        }
+    }
+
+    function checkMatch() {
+        const [card1, card2] = flippedCards;
+        if (card1.dataset.icon === card2.dataset.icon) {
+            card1.classList.add('matched');
+            card2.classList.add('matched');
+            matchedCount++;
+            document.getElementById('matches').innerText = matchedCount;
+            flippedCards = [];
+            if (matchedCount === 8) endGame();
+        } else {
+            setTimeout(() => {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                flippedCards = [];
+            }, 1000);
+        }
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            seconds++;
+            document.getElementById('timer').innerText = seconds;
+        }, 1000);
+    }
+
+    function endGame() {
+        clearInterval(timerInterval);
+        document.getElementById('final-time').innerText = seconds;
+        document.getElementById('end-screen').style.display = 'flex';
+        
+        let reward = "Hãy cố gắng nhanh hơn để nhận quà nhé!";
+        if (seconds <= 20) reward = "SIÊU TRÍ TUỆ! Nhận ngay Voucher 50%!";
+        else if (seconds <= 35) reward = "TUYỆT VỜI! Nhận ngay Voucher 20%!";
+        
+        document.getElementById('reward-text').innerText = reward;
+    }
+</script>
+</body>
+</html>

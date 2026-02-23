@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn mua hàng - NAW Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #f40e0e; 
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-light: #ffffff;
+            --text-gray: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 50px 20px; }
+
+        .back-btn {
+            display: inline-block;
+            color: var(--text-light);
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: var(--primary-color); transform: translateX(-5px); }
+
+        header h1 { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 10px; text-transform: uppercase; }
+        .subtitle { color: var(--text-gray); font-size: 1.1rem; margin-bottom: 40px; border-left: 3px solid var(--primary-color); padding-left: 15px; }
+
+        section { margin-bottom: 50px; }
+        h2 { color: var(--primary-color); margin-bottom: 25px; font-size: 1.4rem; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        /* Timeline mua hàng */
+        .guide-timeline { position: relative; padding-left: 30px; }
+        .guide-timeline::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #333;
+        }
+
+        .step { position: relative; margin-bottom: 40px; }
+        .step::before {
+            content: ''; position: absolute; left: -34px; top: 5px; width: 10px; height: 10px; 
+            border-radius: 50%; background: var(--primary-color); box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        .step-content { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid #333; }
+        .step-content h3 { color: var(--primary-color); margin-top: 0; margin-bottom: 10px; font-size: 1.1rem; }
+        .step-content i { margin-right: 10px; }
+
+        /* Phương thức thanh toán */
+        .payment-methods { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .pay-item { background: #222; padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #333; transition: 0.3s; }
+        .pay-item:hover { border-color: var(--primary-color); transform: translateY(-5px); }
+        .pay-item i { font-size: 1.5rem; margin-bottom: 10px; display: block; }
+
+        .note-box { background: rgba(244, 14, 14, 0.1); border: 1px dashed var(--primary-color); padding: 20px; border-radius: 10px; margin-top: 20px; }
+
+        footer { text-align: center; padding: 40px; color: var(--text-gray); font-size: 0.8rem; border-top: 1px solid #222; }
+
+        .cua-decoration { position: fixed; bottom: 20px; right: 20px; width: 80px; opacity: 0.4; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Quay lại Trang chủ</a>
+
+        <header data-aos="fade-down">
+            <h1>HƯỚNG DẪN MUA HÀNG</h1>
+            <p class="subtitle">Sở hữu sản phẩm từ NAW Solutions chỉ với vài bước đơn giản.</p>
+        </header>
+
+        <section data-aos="fade-up">
+            <h2>Quy trình đặt hàng</h2>
+            <div class="guide-timeline">
+                <div class="step">
+                    <div class="step-content">
+                        <h3><i class="fas fa-search"></i> Bước 1: Lựa chọn sản phẩm</h3>
+                        <p>Truy cập vào <strong>Tiệm Đồ Linh Tinh</strong> trên các nền tảng TikTok Shop, Shopee hoặc Website. Tìm kiếm sản phẩm phù hợp với nhu cầu của bạn.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h3><i class="fas fa-cart-plus"></i> Bước 2: Thêm vào giỏ hàng</h3>
+                        <p>Kiểm tra kỹ thông tin sản phẩm (màu sắc, kích thước, số lượng) và nhấn <strong>"Thêm vào giỏ hàng"</strong> hoặc <strong>"Mua ngay"</strong>.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h3><i class="fas fa-map-marker-alt"></i> Bước 3: Nhập thông tin giao hàng</h3>
+                        <p>Điền đầy đủ Họ tên, Số điện thoại và Địa chỉ chính xác để đơn vị vận chuyển liên lạc nhanh nhất.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-content">
+                        <h3><i class="fas fa-credit-card"></i> Bước 4: Thanh toán</h3>
+                        <p>Chọn phương thức thanh toán phù hợp và hoàn tất đơn hàng.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section data-aos="fade-up">
+            <h2>Phương thức thanh toán</h2>
+            <div class="payment-methods">
+                <div class="pay-item">
+                    <i class="fas fa-money-bill-wave" style="color: #4caf50;"></i>
+                    <span>Tiền mặt (COD)</span>
+                </div>
+                <div class="pay-item">
+                    <i class="fas fa-university" style="color: #2196f3;"></i>
+                    <span>Chuyển khoản</span>
+                </div>
+                <div class="pay-item">
+                    <i class="fas fa-wallet" style="color: #e91e63;"></i>
+                    <span>Ví điện tử</span>
+                </div>
+            </div>
+        </section>
+
+        <section data-aos="fade-up">
+            <h2>Lưu ý quan trọng</h2>
+            <div class="note-box">
+                <p><i class="fas fa-exclamation-triangle"></i> <strong>Kiểm hàng:</strong> Quý khách vui lòng <strong>quay clip mở hàng</strong> để được hỗ trợ tốt nhất trong trường hợp có lỗi phát sinh.</p>
+                <p><i class="fas fa-phone-volume"></i> <strong>Hỗ trợ:</strong> Nếu gặp khó khăn khi đặt hàng, hãy nhấn nút <strong>Gọi ngay</strong> ở trang chủ hoặc nhắn tin qua Messenger để nhân viên NAW hỗ trợ trực tiếp.</p>
+            </div>
+        </section>
+    </div>
+
+    <img src="cua hdmh.png" class="cua-decoration" alt="Guide Crab">
+
+    <footer>
+        <p>© 2026 NAW Solutions | Hỗ trợ khách hàng 24/7</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 800, once: true });</script>
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chính sách vận chuyển - NAW Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <style>
+        :root {
+            --primary-color: #f40e0e; 
+            --dark-bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-light: #ffffff;
+            --text-gray: #a0a0a0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.8;
+            margin: 0;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 50px 20px; }
+
+        .back-btn {
+            display: inline-block;
+            color: var(--text-light);
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .back-btn:hover { color: var(--primary-color); transform: translateX(-5px); }
+
+        header h1 { font-size: 2.5rem; color: var(--primary-color); margin-bottom: 10px; text-transform: uppercase; }
+        .subtitle { color: var(--text-gray); font-size: 1.1rem; margin-bottom: 40px; border-left: 3px solid var(--primary-color); padding-left: 15px; }
+
+        section { margin-bottom: 50px; }
+        h2 { color: var(--primary-color); margin-bottom: 25px; font-size: 1.4rem; text-transform: uppercase; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        .content-box { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 1px solid #333; margin-bottom: 20px; }
+
+        /* Bảng giá vận chuyển */
+        .shipping-table { width: 100%; border-collapse: collapse; margin: 20px 0; background: #111; border-radius: 10px; overflow: hidden; }
+        .shipping-table th { background: var(--primary-color); color: white; padding: 15px; text-align: left; font-size: 0.9rem; }
+        .shipping-table td { padding: 15px; border-bottom: 1px solid #222; font-size: 0.9rem; }
+        .shipping-table tr:hover { background: rgba(255,255,255,0.03); }
+
+        /* Quy trình vận chuyển */
+        .process-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
+        .process-step { background: #222; padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #333; }
+        .process-step i { color: var(--primary-color); font-size: 1.8rem; margin-bottom: 10px; }
+        .process-step h4 { margin: 10px 0; font-size: 1rem; }
+        .process-step p { font-size: 0.8rem; color: var(--text-gray); margin: 0; }
+
+        .highlight { color: var(--primary-color); font-weight: bold; }
+
+        footer { text-align: center; padding: 40px; color: var(--text-gray); font-size: 0.8rem; border-top: 1px solid #222; }
+
+        .cua-decoration { position: fixed; bottom: 20px; left: 20px; width: 80px; opacity: 0.4; pointer-events: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Quay lại Trang chủ</a>
+
+        <header data-aos="fade-down">
+            <h1>CHI PHÍ VẬN CHUYỂN</h1>
+            <p class="subtitle">Minh bạch thông tin - Giao hàng nhanh chóng trên toàn quốc.</p>
+        </header>
+
+        <section data-aos="fade-up">
+            <h2>Hình thức vận chuyển</h2>
+            <div class="content-box">
+                <p>Tại <strong>NAW Solutions</strong>, chúng tôi hợp tác với các đơn vị vận chuyển hàng đầu (GHTK, Viettel Post, Shopee Express, TikTok Logistics) để đảm bảo hàng từ <span class="highlight">Tiệm Đồ Linh Tinh</span> đến tay khách hàng nhanh nhất.</p>
+                <p>Mức phí được tính dựa trên <strong>trọng lượng sản phẩm</strong> và <strong>khoảng cách địa lý</strong> từ kho tổng của chúng tôi tại Hà Nội.</p>
+            </div>
+        </section>
+
+        <section data-aos="fade-up">
+            <h2>Biểu phí ước tính</h2>
+            <table class="shipping-table">
+                <thead>
+                    <tr>
+                        <th>Khu vực</th>
+                        <th>Trọng lượng</th>
+                        <th>Phí dự kiến</th>
+                        <th>Thời gian</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nội thành Hà Nội</td>
+                        <td>Dưới 2kg</td>
+                        <td>15.000đ - 22.000đ</td>
+                        <td>6h - 24h</td>
+                    </tr>
+                    <tr>
+                        <td>Tỉnh/Thành miền Bắc</td>
+                        <td>Dưới 1kg</td>
+                        <td>25.000đ - 30.000đ</td>
+                        <td>1 - 2 ngày</td>
+                    </tr>
+                    <tr>
+                        <td>Miền Trung & Miền Nam</td>
+                        <td>Dưới 1kg</td>
+                        <td>30.000đ - 45.000đ</td>
+                        <td>3 - 5 ngày</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size: 0.8rem; color: var(--text-gray);">* Lưu ý: Phí trên chưa bao gồm phụ phí hàng cồng kềnh hoặc dịch vụ hỏa tốc.</p>
+        </section>
+
+        <section data-aos="fade-up">
+            <h2>Quy trình xử lý đơn hàng</h2>
+            
+
+
+            <div class="process-grid">
+                <div class="process-step">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h4>Xác nhận</h4>
+                    <p>Kiểm tra đơn hàng trong 30 phút.</p>
+                </div>
+                <div class="process-step">
+                    <i class="fas fa-box-open"></i>
+                    <h4>Đóng gói</h4>
+                    <p>Chuẩn đóng gói 3 lớp bảo vệ.</p>
+                </div>
+                <div class="process-step">
+                    <i class="fas fa-truck-fast"></i>
+                    <h4>Giao hàng</h4>
+                    <p>Bàn giao cho đơn vị vận chuyển.</p>
+                </div>
+                <div class="process-step">
+                    <i class="fas fa-check-circle"></i>
+                    <h4>Hoàn tất</h4>
+                    <p>Khách kiểm tra và nhận hàng.</p>
+                </div>
+            </div>
+        </section>
+
+        <section data-aos="fade-up">
+            <h2>Ưu đãi FreeShip</h2>
+            <div class="content-box" style="border-left: 5px solid var(--primary-color);">
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    <li><i class="fas fa-gift" style="color: var(--primary-color);"></i> <strong>Đơn hàng từ 500.000đ:</strong> Miễn phí vận chuyển toàn quốc.</li>
+                    <li><i class="fas fa-star" style="color: var(--primary-color);"></i> <strong>Khách hàng thân thiết:</strong> Voucher giảm 50% phí ship hàng tháng.</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <img src="cua giao hang.png" class="cua-decoration" alt="Shipping Crab">
+
+    <footer>
+        <p>© 2026 NAW Solutions </p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>AOS.init({ duration: 800, once: true });</script>
+</body>
+</html>

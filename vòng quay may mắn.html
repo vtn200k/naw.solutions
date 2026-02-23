@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Lucky Wheel - NAW Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-glow: #f40e0e;
+            --gold-glow: #ffcc00;
+            --dark-bg: #121212;
+            --card-bg: #1e1e1e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 400px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 40px;
+            margin: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8), inset 0 0 10px #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Hiệu ứng viền phát sáng vàng quanh máy */
+        .phone-container::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 38px; border: 1px solid var(--gold-glow);
+            opacity: 0.3; pointer-events: none;
+        }
+
+        h1 { color: var(--primary-glow); font-size: 1.4rem; text-align: center; text-transform: uppercase; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 30px; }
+
+        /* VÒNG QUAY SVG PREMIUM */
+        .wheel-box {
+            position: relative;
+            width: 260px; height: 260px;
+            margin: 0 auto 40px;
+        }
+
+        #wheel-svg {
+            width: 100%; height: 100%;
+            filter: drop-shadow(0 0 15px rgba(244, 14, 14, 0.4));
+            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+        }
+
+        /* Mũi tên tâm điểm */
+        .center-hub {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px; height: 50px;
+            background: radial-gradient(circle, #ffcc00, #aa8800);
+            border-radius: 50%; z-index: 10;
+            border: 4px solid #1a1a1a;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+        }
+
+        .indicator {
+            position: absolute; top: -15px; left: 50%;
+            transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 12px solid transparent; border-right: 12px solid transparent;
+            border-top: 25px solid var(--gold-glow);
+            z-index: 11;
+            filter: drop-shadow(0 0 5px var(--gold-glow));
+        }
+
+        /* NÚT BẮT ĐẦU QUAY */
+        .btn-spin {
+            display: block; width: 80%; margin: 0 auto;
+            background: linear-gradient(135deg, #f40e0e, #800000);
+            color: white; border: none; padding: 15px;
+            border-radius: 50px; font-weight: bold; font-size: 1rem;
+            cursor: pointer; box-shadow: 0 5px 20px rgba(244, 14, 14, 0.5);
+            transition: 0.3s;
+        }
+        .btn-spin:active { transform: scale(0.95); }
+
+        /* LUẬT CHƠI SECTION */
+        .rules-section { margin-top: 40px; }
+        .rules-title { font-size: 0.9rem; color: var(--gold-glow); font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        
+        .rule-card {
+            background: #252525; padding: 12px; border-radius: 12px;
+            margin-bottom: 10px; display: flex; align-items: center; gap: 15px;
+            border-left: 3px solid var(--primary-glow);
+        }
+        .rule-card i { color: var(--gold-glow); font-size: 1.1rem; }
+        .rule-card p { margin: 0; font-size: 0.75rem; color: #ccc; line-height: 1.4; }
+
+        /* OVERLAY KẾT QUẢ */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 100;
+        }
+        .popup {
+            background: #222; border: 2px solid var(--gold-glow); padding: 40px;
+            border-radius: 20px; text-align: center; box-shadow: 0 0 30px var(--gold-glow);
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-container">
+    <h1>Vòng Quay May Mắn</h1>
+    <p class="subtitle">Premium - NAW & SVG Edition</p>
+
+    <div class="wheel-box">
+        <div class="indicator"></div>
+        <div class="center-hub"></div>
+        <svg id="wheel-svg" viewBox="0 0 300 300">
+            <g id="wheel-group"></g>
+        </svg>
+    </div>
+
+    <button class="btn-spin" id="spinBtn">BẮT ĐẦU QUAY</button>
+
+    <div class="rules-section">
+        <div class="rules-title">LUẬT & NHẬN THƯỞNG</div>
+        
+        <div class="rule-card">
+            <i class="fas fa-camera"></i>
+            <p>Chụp màn hình khi trúng thưởng và liên hệ Admin để xác nhận.</p>
+        </div>
+
+        <div class="rule-card">
+            <i class="fas fa-user-shield"></i>
+            <p>Mỗi khách hàng chỉ được tham gia duy nhất 1 lần .</p>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="overlay">
+    <div class="popup">
+        <h2 style="color:var(--gold-glow)">CHÚC MỪNG!</h2>
+        <p id="resultText" style="font-size: 1.2rem; font-weight: bold;"></p>
+        <button class="btn-spin" onclick="location.reload()">NHẬN QUÀ</button>
+    </div>
+</div>
+
+<script>
+    const prizes = ["10% Voucher", "Free Ship", "20% Voucher", "NAW Gift", "5% Voucher", "May Mắn", "30% Voucher", "NAW Pro"];
+    const wheelGroup = document.getElementById('wheel-group');
+    const spinBtn = document.getElementById('spinBtn');
+    const wheelSvg = document.getElementById('wheel-svg');
+    const resultText = document.getElementById('resultText');
+    const overlay = document.getElementById('overlay');
+
+    // Tạo các lát cắt SVG cho vòng quay
+    prizes.forEach((prize, i) => {
+        const angle = 360 / prizes.length;
+        const startAngle = i * angle;
+        const endAngle = (i + 1) * angle;
+        
+        // Vẽ Path SVG
+        const x1 = 150 + 140 * Math.cos(Math.PI * (startAngle - 90) / 180);
+        const y1 = 150 + 140 * Math.sin(Math.PI * (startAngle - 90) / 180);
+        const x2 = 150 + 140 * Math.cos(Math.PI * (endAngle - 90) / 180);
+        const y2 = 150 + 140 * Math.sin(Math.PI * (endAngle - 90) / 180);
+        
+        const pathData = `M 150 150 L ${x1} ${y1} A 140 140 0 0 1 ${x2} ${y2} Z`;
+        
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathData);
+        path.setAttribute("fill", i % 2 === 0 ? "#f40e0e" : "#800000");
+        path.setAttribute("stroke", "#1a1a1a");
+        path.setAttribute("stroke-width", "2");
+        wheelGroup.appendChild(path);
+
+        // Thêm Text
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        const textAngle = startAngle + angle / 2;
+        text.setAttribute("x", "150");
+        text.setAttribute("y", "50");
+        text.setAttribute("fill", "white");
+        text.setAttribute("font-size", "10");
+        text.setAttribute("font-weight", "bold");
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("transform", `rotate(${textAngle}, 150, 150)`);
+        text.textContent = prize;
+        wheelGroup.appendChild(text);
+    });
+
+    let rotation = 0;
+    spinBtn.onclick = () => {
+        spinBtn.disabled = true;
+        const extraRotation = Math.floor(Math.random() * 360) + 1800; // Quay tối thiểu 5 vòng
+        rotation += extraRotation;
+        wheelSvg.style.transform = `rotate(${rotation}deg)`;
+
+        setTimeout(() => {
+            const actualDeg = rotation % 360;
+            // Tính toán index chuẩn xác theo kim chỉ hướng lên trên
+            const prizeIndex = Math.floor(((360 - actualDeg) % 360) / 45);
+            resultText.innerText = prizes[prizeIndex];
+            overlay.style.display = 'flex';
+        }, 5000);
+    };
+</script>
+
+</body>
+</html>

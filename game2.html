@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NAW Catcher - Universal Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root { --primary: #f40e0e; --gold: #ffcc00; --dark: #0a0a0a; }
+        
+        body { 
+            margin: 0; padding: 0; background: var(--dark); 
+            font-family: 'Inter', sans-serif; color: white;
+            overflow: hidden; touch-action: none; 
+            user-select: none; -webkit-user-select: none;
+        }
+
+        #game-container {
+            position: relative; width: 100vw; height: 100vh;
+            background: radial-gradient(circle at center, #1a1a1a 0%, #050505 100%);
+            overflow: hidden; cursor: none; /* Ẩn chuột trên PC để tăng trải nghiệm */
+        }
+
+        /* Stats Bar */
+        .stats {
+            position: absolute; top: env(safe-area-inset-top, 20px); left: 0; width: 100%;
+            display: flex; justify-content: space-around; z-index: 100;
+        }
+        .stat-item { 
+            background: rgba(0,0,0,0.7); padding: 10px 20px; 
+            border-radius: 20px; border: 1px solid var(--primary); 
+            backdrop-filter: blur(10px); min-width: 100px; text-align: center;
+        }
+        .stat-item span { color: var(--gold); font-weight: bold; font-size: 1.2rem; }
+
+        /* Nhân vật chính (Cua) */
+        #player {
+            position: absolute; bottom: 40px; left: 50%;
+            width: 100px; height: auto;
+            transform: translateX(-50%);
+            filter: drop-shadow(0 0 15px var(--primary));
+            z-index: 50;
+            will-change: left;
+        }
+
+        /* Vật phẩm */
+        .item {
+            position: absolute; font-size: 2.5rem;
+            z-index: 40; will-change: top;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Hiệu ứng nổ */
+        .hit-effect {
+            position: absolute; width: 80px; height: 80px;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            border-radius: 50%; pointer-events: none; 
+            animation: pulse 0.4s ease-out forwards;
+            z-index: 60;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(0); opacity: 1; }
+            to { transform: scale(2); opacity: 0; }
+        }
+
+        /* Overlay */
+        .screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 200; text-align: center; padding: 20px; cursor: default;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), #800000);
+            color: white; border: none; padding: 15px 50px; border-radius: 50px;
+            font-weight: bold; font-size: 1.2rem; cursor: pointer; margin-top: 25px;
+            box-shadow: 0 0 25px rgba(244, 14, 14, 0.5);
+            transition: 0.2s;
+        }
+        .btn:hover { transform: scale(1.05); }
+
+        .shake-screen { animation: shake 0.2s; }
+        @keyframes shake {
+            0%, 100% { transform: translate(0,0); }
+            25% { transform: translate(6px, 6px); }
+            75% { transform: translate(-6px, -6px); }
+        }
+
+        /* Hướng dẫn phím bấm cho PC */
+        .pc-hint { font-size: 0.8rem; color: #555; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div class="stats">
+        <div class="stat-item">Điểm: <span id="score">0</span></div>
+        <div class="stat-item">Thời gian: <span id="timer">30</span>s</div>
+    </div>
+
+    <img src="cua vui ve.png" id="player" alt="Crab">
+
+    <div id="start-screen" class="screen">
+        <div style="font-size: 4rem; margin-bottom: 10px;">🦀</div>
+        <h1 style="color:var(--primary); margin:0; font-size: 2.5rem;">NAW CATCHER</h1>
+        <p style="color:#aaa; max-width: 300px;">Hứng quà rơi để nhận Voucher ưu đãi từ NAW Solutions!</p>
+        <button class="btn" onclick="startGame()">BẮT ĐẦU CHƠI</button>
+        <div class="pc-hint">PC: Dùng chuột hoặc Phím mũi tên | Mobile: Vuốt màn hình</div>
+    </div>
+
+    <div id="end-screen" class="screen" style="display: none;">
+        <h2 id="final-status" style="color:var(--gold)">KẾT THÚC!</h2>
+        <p>Tổng điểm của bạn:</p>
+        <h1 id="final-score" style="font-size: 4rem; margin: 10px 0; color: var(--primary);">0</h1>
+        <p id="reward-text" style="color:#ccc; font-style: italic;"></p>
+        <button class="btn" onclick="location.reload()">CHƠI LẠI</button>
+    </div>
+</div>
+
+<script>
+    const container = document.getElementById('game-container');
+    const player = document.getElementById('player');
+    const scoreEl = document.getElementById('score');
+    const timerEl = document.getElementById('timer');
+    const items = ['🎁', '💰', '💎', '⭐', '🍎', '🍬'];
+    
+    let score = 0;
+    let timeLeft = 30;
+    let gameRunning = false;
+    let spawnInterval;
+    let clockInterval;
+    let playerX = window.innerWidth / 2;
+
+    // --- ĐIỀU KHIỂN ĐA NỀN TẢNG ---
+
+    // 1. Chuột & Cảm ứng
+    function handleMove(e) {
+        if (!gameRunning) return;
+        const x = e.touches ? e.touches[0].clientX : e.clientX;
+        updatePlayerPos(x);
+    }
+
+    // 2. Bàn phím (Cho PC)
+    window.addEventListener('keydown', (e) => {
+        if (!gameRunning) return;
+        const step = 40;
+        if (e.key === 'ArrowLeft') updatePlayerPos(playerX - step);
+        if (e.key === 'ArrowRight') updatePlayerPos(playerX + step);
+    });
+
+    function updatePlayerPos(newX) {
+        const playerWidth = player.offsetWidth;
+        playerX = Math.max(playerWidth / 2, Math.min(window.innerWidth - playerWidth / 2, newX));
+        player.style.left = (playerX - playerWidth / 2) + 'px';
+        player.style.transform = 'translateX(0)';
+    }
+
+    container.addEventListener('mousemove', handleMove);
+    container.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        handleMove(e);
+    }, {passive: false});
+
+    // --- LOGIC GAME ---
+
+    function startGame() {
+        document.getElementById('start-screen').style.display = 'none';
+        gameRunning = true;
+        
+        spawnInterval = setInterval(() => {
+            if (gameRunning) createItem();
+        }, 450); // Tốc độ xuất hiện quà
+
+        clockInterval = setInterval(() => {
+            timeLeft--;
+            timerEl.innerText = timeLeft;
+            if (timeLeft <= 0) endGame();
+        }, 1000);
+    }
+
+    function createItem() {
+        const item = document.createElement('div');
+        item.className = 'item';
+        item.innerText = items[Math.floor(Math.random() * items.length)];
+        
+        const itemWidth = 40;
+        item.style.left = Math.random() * (window.innerWidth - itemWidth) + 'px';
+        item.style.top = '-60px';
+        container.appendChild(item);
+
+        let topPos = -60;
+        // PC màn hình rộng thì quà rơi nhanh hơn một chút để cân bằng
+        const baseSpeed = window.innerWidth > 800 ? 6 : 4;
+        const speed = baseSpeed + Math.random() * 5;
+
+        function fall() {
+            if (!gameRunning) { item.remove(); return; }
+            
+            topPos += speed;
+            item.style.top = topPos + 'px';
+
+            const pRect = player.getBoundingClientRect();
+            const iRect = item.getBoundingClientRect();
+
+            // Kiểm tra va chạm chính xác hơn
+            if (iRect.bottom >= pRect.top + 25 &&
+                iRect.top <= pRect.bottom &&
+                iRect.left < pRect.right - 15 &&
+                iRect.right > pRect.left + 15) {
+                
+                score += 10;
+                scoreEl.innerText = score;
+                triggerHit(iRect.left, iRect.top);
+                item.remove();
+                return;
+            }
+
+            if (topPos > window.innerHeight) {
+                item.remove();
+            } else {
+                requestAnimationFrame(fall);
+            }
+        }
+        requestAnimationFrame(fall);
+    }
+
+    function triggerHit(x, y) {
+        const effect = document.createElement('div');
+        effect.className = 'hit-effect';
+        effect.style.left = x + 'px';
+        effect.style.top = y + 'px';
+        container.appendChild(effect);
+        
+        container.classList.add('shake-screen');
+        setTimeout(() => {
+            effect.remove();
+            container.classList.remove('shake-screen');
+        }, 300);
+    }
+
+    function endGame() {
+        gameRunning = false;
+        clearInterval(spawnInterval);
+        clearInterval(clockInterval);
+        
+        document.getElementById('end-screen').style.display = 'flex';
+        document.getElementById('final-score').innerText = score;
+        
+        let msg = "Bạn rất cừ!";
+        if (score >= 500) msg = "ĐẲNG CẤP! Mã Voucher 50% dành cho bạn.";
+        else if (score >= 300) msg = "TUYỆT VỜI! Mã Voucher 30% dành cho bạn.";
+        else if (score >= 100) msg = "TỐT LẮM! Mã Voucher 10% dành cho bạn.";
+        
+        document.getElementById('reward-text').innerText = msg + "\nChụp màn hình gửi Admin nhé!";
+    }
+</script>
+</body>
+</html>

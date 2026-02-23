@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NAW Gold Miner - Đào Kho Báu</title>
+    <style>
+        :root { --primary: #f40e0e; --gold: #ffcc00; --dark: #0a0a0a; }
+        body { margin: 0; background: #000; overflow: hidden; font-family: 'Inter', sans-serif; touch-action: none; }
+        canvas { display: block; background: linear-gradient(to bottom, #222, #050505); margin: 0 auto; }
+        
+        .ui {
+            position: fixed; top: 20px; width: 100%; display: flex;
+            justify-content: space-around; z-index: 100; pointer-events: none;
+        }
+        .stat { background: rgba(0,0,0,0.8); padding: 10px 20px; border-radius: 20px; border: 1px solid var(--primary); color: white; }
+        
+        .screen {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 200; text-align: center; color: white; padding: 20px;
+        }
+        .btn {
+            background: var(--primary); color: white; border: none; padding: 15px 40px;
+            border-radius: 50px; font-weight: bold; cursor: pointer; margin-top: 20px;
+            box-shadow: 0 0 20px var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="ui">
+    <div class="stat">Điểm: <span id="score">0</span></div>
+    <div class="stat">Thời gian: <span id="timer">45</span>s</div>
+</div>
+
+<div id="start-screen" class="screen">
+    <h1 style="color:var(--primary); font-size: 2.5rem;">CRAB MINER</h1>
+    <p>Chạm để thả móc - Gắp thật nhiều quà!</p>
+    <button class="btn" onclick="startGame()">BẮT ĐẦU</button>
+</div>
+
+<div id="end-screen" class="screen" style="display: none;">
+    <h2 style="color:var(--gold)">HẾT GIỜ!</h2>
+    <h1 id="final-score" style="font-size: 3.5rem; color: var(--primary);">0</h1>
+    <p id="reward-text"></p>
+    <button class="btn" onclick="location.reload()">CHƠI LẠI</button>
+</div>
+
+<canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = window.innerWidth > 500 ? 400 : window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    let score = 0, timeLeft = 45, gameRunning = false;
+    let hook = { x: canvas.width/2, y: 80, angle: 0, dir: 1, length: 40, state: 'swing', speed: 4 };
+    let items = [];
+
+    const crabImg = new Image();
+    crabImg.src = 'cua vui ve.png';
+
+    function startGame() {
+        document.getElementById('start-screen').style.display = 'none';
+        gameRunning = true;
+        score = 0;
+        spawnItems();
+        animate();
+        let timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer').innerText = timeLeft;
+            if(timeLeft <= 0) { clearInterval(timer); gameRunning = false; showEnd(); }
+        }, 1000);
+    }
+
+    function spawnItems() {
+        for(let i=0; i<8; i++) {
+            items.push({
+                x: Math.random() * (canvas.width - 40) + 20,
+                y: Math.random() * (canvas.height - 250) + 200,
+                r: Math.random() * 20 + 10,
+                val: Math.floor(Math.random() * 50) + 10
+            });
+        }
+    }
+
+    window.addEventListener('mousedown', () => { if(hook.state === 'swing') hook.state = 'extend'; });
+    window.addEventListener('touchstart', (e) => { e.preventDefault(); if(hook.state === 'swing') hook.state = 'extend'; });
+
+    function animate() {
+        if(!gameRunning) return;
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+
+        // Vẽ Cua điều khiển
+        ctx.drawImage(crabImg, canvas.width/2 - 40, 10, 80, 60);
+
+        // Xử lý móc
+        if(hook.state === 'swing') {
+            hook.angle += 0.03 * hook.dir;
+            if(Math.abs(hook.angle) > 1.2) hook.dir *= -1;
+        } else if(hook.state === 'extend') {
+            hook.length += hook.speed;
+            if(hook.length > canvas.height - 50) hook.state = 'retract';
+        } else if(hook.state === 'retract') {
+            hook.length -= hook.speed;
+            if(hook.length <= 40) { hook.state = 'swing'; hook.speed = 4; }
+        }
+
+        let hookX = hook.x + Math.sin(hook.angle) * hook.length;
+        let hookY = hook.y + Math.cos(hook.angle) * hook.length;
+
+        // Vẽ dây móc
+        ctx.strokeStyle = '#888'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(hook.x, hook.y); ctx.lineTo(hookX, hookY); ctx.stroke();
+        
+        // Vẽ đầu móc
+        ctx.fillStyle = varColor('--gold');
+        ctx.beginPath(); ctx.arc(hookX, hookY, 10, 0, Math.PI*2); ctx.fill();
+
+        // Vẽ & Kiểm tra va chạm vật phẩm
+        items.forEach((item, index) => {
+            ctx.fillStyle = varColor('--primary');
+            ctx.beginPath(); ctx.arc(item.x, item.y, item.r, 0, Math.PI*2); ctx.fill();
+            
+            if(hook.state === 'extend') {
+                let dist = Math.hypot(hookX - item.x, hookY - item.y);
+                if(dist < item.r + 10) {
+                    hook.state = 'retract';
+                    hook.speed = 2; // Gắp nặng nên kéo chậm
+                    item.caught = true;
+                }
+            }
+            if(item.caught) {
+                item.x = hookX; item.y = hookY;
+                if(hook.state === 'swing') {
+                    score += item.val;
+                    document.getElementById('score').innerText = score;
+                    items.splice(index, 1);
+                    if(items.length < 5) spawnItems();
+                }
+            }
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    function varColor(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+    function showEnd() {
+        document.getElementById('end-screen').style.display = 'flex';
+        document.getElementById('final-score').innerText = score;
+        let r = score > 300 ? "Voucher 50%" : score > 150 ? "Voucher 20%" : "Quà an ủi";
+        document.getElementById('reward-text').innerText = "Phần thưởng: " + r;
+    }
+</script>
+</body>
+</html>
