@@ -424,6 +424,20 @@ header {
         margin-left: 8px !important;
     }
 }
+        /* Chỉ áp dụng cho màn hình điện thoại (dưới 480px) */
+@media screen and (max-width: 480px) {
+    /* Thay '.naw-title' bằng class chính xác của bạn, 
+       thường là thẻ h1 hoặc h2 chứa chữ đó */
+    h1, .hero-title, .naw-title { 
+        font-size: 8vw !important; /* Chữ tự co lại theo tỷ lệ màn hình */
+        white-space: nowrap !important; /* Ép chữ nằm trên 1 hàng duy nhất */
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        overflow: hidden; /* Tránh tràn viền */
+        text-overflow: ellipsis; 
+    }
+}
     </style>
 </head>
 <body>
